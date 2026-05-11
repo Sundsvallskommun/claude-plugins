@@ -1,0 +1,15 @@
+{
+  "name": "sundsvallskommun",
+  "description": "Claude Code plugins for Sundsvalls kommun developers",
+  "owner": {
+    "name": "Sundsvalls kommun",
+    "url": "https://github.com/Sundsvallskommun"
+  },
+  "plugins": [
+    {
+      "name": "dept44",
+      "description": "Conventions, patterns, and scaffolding for dept44 microservices",
+      "source": "./dept44"
+    }
+  ]
+}

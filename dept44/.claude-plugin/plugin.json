@@ -1,0 +1,10 @@
+{
+  "name": "dept44",
+  "version": "1.0.0",
+  "description": "Conventions, patterns, and scaffolding for dept44 microservices (Sundsvalls kommun)",
+  "author": {
+    "name": "Sundsvalls kommun",
+    "url": "https://github.com/Sundsvallskommun"
+  },
+  "keywords": ["dept44", "java", "spring-boot", "microservices", "sundsvall"]
+}
