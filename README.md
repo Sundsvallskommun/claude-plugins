@@ -13,7 +13,7 @@ From within Claude Code, add the marketplace once:
 Then install the plugins you want:
 
 ```
-/plugin install dept44@claude-plugins
+/plugin install dept44@sundsvall-claude-plugins
 ```
 
 Run `/reload-plugins` if needed.
@@ -52,7 +52,7 @@ To disable the plugin for a non-dept44 project, add this to that project's `.cla
 ```json
 {
   "enabledPlugins": {
-    "dept44@claude-plugins": false
+    "dept44@sundsvall-claude-plugins": false
   }
 }
 ```
@@ -97,4 +97,4 @@ dept44/                     # The dept44 plugin
      "source": "./my-plugin"
    }
    ```
-3. Commit and push. Colleagues who already added this marketplace can install it with `/plugin install my-plugin@claude-plugins`.
+3. Commit and push. Colleagues who already added this marketplace can install it with `/plugin install my-plugin@sundsvall-claude-plugins`.
