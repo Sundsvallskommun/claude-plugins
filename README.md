@@ -28,6 +28,8 @@ Coding conventions, pattern references, and scaffolding commands for dept44 micr
 - **14 slash commands** — pattern references (`/dept44:pattern-resource`, `/dept44:pattern-service`, etc.) and scaffolding (`/dept44:new-entity`, `/dept44:new-endpoint-crud`, etc.). The `pattern-*` and `new-*` commands are thin wrappers — each one points at a reference file under `skills/` so there's a single source of truth.
 - **4 skills** — contextual knowledge that Claude activates automatically: `dept44-patterns` (layer patterns + tests), `dept44-scaffold` (generating new components), `dept44-source` (framework internals lookup), `pattern-validator` (field validation)
 
+The dept44 plugin's skills, pattern references, and conventions were created by [Linus Sjölinder](https://github.com/Cheezi747).
+
 | Command | Description |
 |---|---|
 | `/dept44:pattern-resource` | REST controller (Resource) pattern |
