@@ -12,7 +12,9 @@ Reference for dept44 JPA entities and Spring Data repositories. Look at existing
 - `@Column(name = "snake_case")` with `nullable` and `length` attributes
 - `@TimeZoneStorage(NORMALIZE)` on `OffsetDateTime` fields
 - `@PrePersist` / `@PreUpdate` for auto-setting timestamps
+- Enum fields: `@Enumerated(EnumType.STRING)` — always store as varchar, never ordinal
 - Relationships: `@ManyToOne`, `@OneToMany(cascade = ALL, orphanRemoval = true, fetch = EAGER)`
+- **Every entity needs the full member set, no exceptions**: `create()`, a getter AND a setter AND a `with*()` for every field, plus manual `equals()`, `hashCode()`, `toString()` covering **all** fields. Don't ship a "fluent-only" entity (with* but no set*) — it's incomplete and **breaks `testBean`** (BeanMatchers' `hasValidGettersAndSetters`/`hasValidBeanEquals`/`hasValidBeanToString` mutate via setters, so a missing setter fails with `AccessorMissing missing setter for property …`).
 - Manual `equals()`, `hashCode()`, `toString()` — use concatenation style for `toString()`:
   ```java
   return "EntityName{" +
@@ -20,6 +22,11 @@ Reference for dept44 JPA entities and Spring Data repositories. Look at existing
       ", field=" + field +
       '}';
   ```
+- **Column lengths follow the convention** — match the entity `@Column(length = …)` to the Flyway column type:
+  - id / UUID FK columns (`id`, `errand_id`, `*_id`): `length = 255` (uniform across the codebase — don't right-size a single one to 36; if a fleet-wide UUID right-size is wanted, do it everywhere in one change).
+  - free-text user content (`body`, `description`): `length = LONG32` (→ `longtext`).
+  - short codes/enums-as-string: size to fit (`16`, `32`, `64`).
+  - Changing a length means changing the **migration too** (the entity annotation alone only affects the test schema, since unit tests use `schema-generation action: update` while prod uses Flyway) — and migrations are immutable once applied, so it needs a new `ALTER` migration, not an edit.
 - Flyway migration: UUID columns use `VARCHAR(255) NOT NULL PRIMARY KEY` (no auto-increment)
 
 ## Entity Test Pattern

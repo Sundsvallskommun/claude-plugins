@@ -12,6 +12,7 @@ Reference for dept44 Resource classes and their test patterns. Look at existing 
 - Every `@PathVariable` parameter is `final` — do NOT include redundant name (use `@PathVariable`, not `@PathVariable("name")`)
 - Use dept44 validators: `@ValidMunicipalityId`, `@ValidUuid` on path variables
 - `@Pattern` with constants for namespace validation
+- **Create endpoints must use `@Validated({Default.class, OnCreate.class})`, NOT `@Validated(OnCreate.class)` alone.** A method-level `@Validated(OnCreate.class)` narrows method validation to the `OnCreate` group only — which **silently skips the Default-group path-variable validators** (`@ValidMunicipalityId`/`@ValidUuid`/`@Pattern`), so a bad `municipalityId`/`namespace`/`{errandId}` is accepted (201) on POST while GET/DELETE reject it. Always include `Default.class` so both the path validators (Default) and the body's `OnCreate` constraints fire. (Bug found by a FailureTest that POSTed a bad municipalityId and got 201 instead of 400.)
 - **Class-level `@ApiResponses`** for 400 and 500 to reduce duplication:
   ```java
   @ApiResponses(value = {
@@ -23,6 +24,8 @@ Reference for dept44 Resource classes and their test patterns. Look at existing 
 - Error responses use `APPLICATION_PROBLEM_JSON_VALUE` with `Problem.class` and `ConstraintViolationProblem.class`
 - Return types: `created(location).build()` for POST, `ok(result)` for GET, `noContent().build()` for DELETE
 - Static imports for `ResponseEntity.created`, `ResponseEntity.ok`, `ResponseEntity.noContent`, media types, etc.
+- **Required headers are declared method params, never read imperatively.** For the caller identity (`X-Sent-By`), declare `@Parameter(name = Identifier.HEADER_NAME, ...) @RequestHeader(Identifier.HEADER_NAME) @ValidIdentifier final String xSentBy`, then resolve with `Identifier.parse(xSentBy)`. Do **not** read `Identifier.get()` from the thread-local without declaring the header — that hides the required input from the OpenAPI contract and skips validation. `@ValidIdentifier` is a per-service custom validator (in `api/validation/` + `api/validation/impl/`); copy the small one from a sibling service (e.g. messaging-settings) if this service doesn't have it yet.
+- **Multi-line `@Operation`/`@Parameter`/`@Schema` descriptions use Java text blocks (`"""…"""`), not `+` concatenation.** Use `\` line-continuations to keep one logical line so the generated OpenAPI text is byte-for-byte unchanged (the contract IT verifies it). Exception: a description that splices in a constant/value (`"… '" + Identifier.HEADER_NAME + "' …"`) must stay concatenated — text blocks can't interpolate.
 
 ## Resource Test — Happy Path (`{Resource}Test`)
 

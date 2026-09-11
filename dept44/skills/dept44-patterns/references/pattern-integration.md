@@ -31,6 +31,7 @@ public interface {Service}Client {
 - `CLIENT_ID` imported statically from Configuration class
 - `@CircuitBreaker` on the interface
 - Path variables are `final`
+- `@PathVariable` without redundant name — use `@PathVariable final String municipalityId`, NOT `@PathVariable("municipalityId") final String municipalityId` (parameter name already matches)
 
 ## Configuration
 
