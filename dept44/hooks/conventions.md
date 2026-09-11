@@ -72,7 +72,7 @@ se.sundsvall.{servicename}/
 - **Static imports for enums and constants** — write `BAD_REQUEST`, not `HttpStatus.BAD_REQUEST`
 - Custom validation annotations in `api/validation/` with impls in `api/validation/impl/`
 - **AssertJ** for test assertions (except BeanMatchers which use Hamcrest)
-- Format with `mvn dept44-formatting:format`; checkstyle enforced by CI
+- Format with `mvn dept44-formatting:apply`; checkstyle enforced by CI
 - Component structure & tests (Resource / POJO / Entity / Service / Mapper / Integration / Scheduler): see the `pattern-*` commands or the `dept44-patterns` skill for the canonical layout of each — Resources are package-private and thin (delegate all logic to the service layer); services use constructor injection; mappers are private-constructor static utility classes
 - Error handling: dept44 Problem (`se.sundsvall.dept44.problem.Problem`) — `Problem.valueOf(STATUS, message)` in the service/integration layers, never in Resources
 - All Feign clients and repositories require `@CircuitBreaker`
@@ -130,7 +130,7 @@ se.sundsvall.{servicename}/
 mvn clean verify              # Build + all tests
 mvn test                      # Unit tests only
 mvn spring-boot:run           # Run locally
-mvn dept44-formatting:format  # Format code
+mvn dept44-formatting:apply   # Format code
 ```
 
 ## Things to Avoid
