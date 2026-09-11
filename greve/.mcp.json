@@ -1,0 +1,6 @@
+{
+  "greve": {
+    "command": "greve",
+    "args": ["mcp"]
+  }
+}

@@ -10,6 +10,11 @@
       "name": "dept44",
       "description": "Conventions, patterns, and scaffolding for dept44 microservices",
       "source": "./dept44"
+    },
+    {
+      "name": "greve",
+      "description": "greve MCP server, /greve:review robot and usage skill for the dept44 fleet (requires the greve binary)",
+      "source": "./greve"
     }
   ]
 }
