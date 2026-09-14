@@ -127,8 +127,8 @@ void testNoDirtOnCreatedBean() {
 Both AssertJ (`org.assertj.core.api.Assertions.assertThat`) and Hamcrest (`org.hamcrest.MatcherAssert.assertThat`, used by BeanMatchers `testBean`) export a method named `assertThat`. Only one can be static-imported per file. **Static-import the AssertJ one** (used many times — every field/builder assertion, written bare) and **class-import the Hamcrest one** so the single bean check reads `MatcherAssert.assertThat`:
 
 ```java
-import static org.assertj.core.api.Assertions.assertThat;   // the many AssertJ assertions, bare
 import org.hamcrest.MatcherAssert;                          // class import for the one bean check
+import static org.assertj.core.api.Assertions.assertThat;   // the many AssertJ assertions, bare
 // ...
 assertThat(result.getId()).isEqualTo(id);                  // AssertJ, bare
 MatcherAssert.assertThat(Foo.class, allOf(...));           // Hamcrest bean check, class-qualified
