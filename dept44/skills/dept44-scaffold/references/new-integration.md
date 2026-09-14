@@ -15,6 +15,7 @@ Examine the existing `integration/` packages to match the exact style used in th
 - `@CircuitBreaker(name = CLIENT_ID)` on the interface
 - Standard Spring MVC method annotations (`@GetMapping`, etc.)
 - `CLIENT_ID` imported statically from the Configuration class
+- `@PathVariable` without redundant name — use `@PathVariable final String municipalityId`, NOT `@PathVariable("municipalityId") final String municipalityId` (parameter name already matches)
 
 ### 2. Configuration (`integration/{servicename}/configuration/`)
 - `{Service}Configuration.java`

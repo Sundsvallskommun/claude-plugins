@@ -8,6 +8,11 @@
 - **Municipality ID** `2281` is Sundsvall's municipality code, used as path parameter in APIs
 - **All services** are in the Sundsvallskommun GitHub org. If a sibling service repo is cloned locally, prefer reading from the filesystem over fetching from GitHub.
 
+## Pull requests and issues
+
+There is **no per-repo PR template** — every repo inherits the org-level one from `Sundsvallskommun/.github`. Before
+`gh pr create` or `gh issue create`, use the `pr-template` skill: it says where the template is and how to fill it in.
+
 ## Tech Stack
 
 - Java 25 (`maven.compiler.release=25`)
@@ -62,19 +67,26 @@ se.sundsvall.{servicename}/
 
 - REST controllers in `api/` package, named `{Entity}Resource` (not Controller)
 - API paths include municipality ID: `/{municipalityId}/...`
-- **No enums in API model layer** — use `String` fields + custom validation annotations. Enums fine internally.
+- **No enums in API model layer** — use `String` fields + `@MemberOf(MyEnum.class)` (from `dept44-common-validators`) for validation + `@Schema(allowableValues = {"VAL1", "VAL2"})` to expose valid values in OpenAPI. Also available: `@OneOf({"val1", "val2"})` for literal value lists. Enums fine internally (entities, mappers).
+- **Enums in entities** — use `@Enumerated(EnumType.STRING)` to store as varchar, never ordinal (`int(11)`)
 - **No Lombok** — write getters, setters, constructors, builders explicitly
 - Use records for simple immutable DTOs when no mutation is needed
 - **Prefer `Optional` over ternary (`? :`) and null checks** — use `Optional.ofNullable()`, `.map()`, `.orElse()`, `.ifPresent()` etc. for all nullable handling
 - **Variables should be `final` whenever possible**
+- **Prefer method references over lambdas** — write `.map(Mapper::toEntity)`, not `.map(e -> toEntity(e))`
+- **Unused lambda parameters must be `_`** — write `(root, _, cb) ->`, not `(root, cq, cb) ->` (Java 22+ unnamed variables)
 - **Always use explicit imports — never wildcard imports (`import x.y.*`)**
 - **Always import classes** rather than using fully-qualified names inline (e.g. `new Party()` not `new generated.se.sundsvall.comfact.Party()`). Only use fully-qualified names when two classes share the same simple name and both are needed in the same file.
 - **Static imports for enums and constants** — write `BAD_REQUEST`, not `HttpStatus.BAD_REQUEST`
 - Custom validation annotations in `api/validation/` with impls in `api/validation/impl/`
 - **AssertJ** for test assertions (except BeanMatchers which use Hamcrest)
-- Format with `mvn dept44-formatting:apply`; checkstyle enforced by CI
-- Component structure & tests (Resource / POJO / Entity / Service / Mapper / Integration / Scheduler): see the `pattern-*` commands or the `dept44-patterns` skill for the canonical layout of each — Resources are package-private and thin (delegate all logic to the service layer); services use constructor injection; mappers are private-constructor static utility classes
-- Error handling: dept44 Problem (`se.sundsvall.dept44.problem.Problem`) — `Problem.valueOf(STATUS, message)` in the service/integration layers, never in Resources
+- Format with `mvn dept44-formatting:apply` (CI checks with `mvn dept44-formatting:check`); checkstyle enforced by CI
+- Component structure & tests (Resource / POJO / Entity / Service / Mapper / Integration / Scheduler): see the `pattern-*` commands or the `dept44-patterns` skill for the canonical layout of each
+  - API models: `create()` factory, getters and setters, `with*()` fluent setters, manual `equals`/`hashCode`/`toString`
+  - Services: `@Service`, constructor injection, `final` dependencies, `Problem.valueOf()` for errors
+  - Mappers: static utility classes with private constructor, null-safe with `ofNullable()`
+  - Resources: package-private, thin (no business logic), delegate to service layer
+- Error handling: dept44 Problem (`se.sundsvall.dept44.problem.Problem`) — `Problem.valueOf(HttpStatus, detail)` in the service/integration layers, never in Resources. It returns `se.sundsvall.dept44.problem.ThrowableProblem` (status field is Spring's `org.springframework.http.HttpStatus`). **Never** import from `org.zalando.problem.*` — it is not on the classpath in dept44 8+. In tests, assert with `.isInstanceOf(ThrowableProblem.class).hasFieldOrPropertyWithValue("status", HttpStatus.NOT_FOUND)` using the dept44 `ThrowableProblem` and Spring `HttpStatus`.
 - All Feign clients and repositories require `@CircuitBreaker`
 - Schedulers use `@Dept44Scheduled` (NOT Spring's `@Scheduled`)
 
