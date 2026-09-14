@@ -27,7 +27,7 @@ Coding conventions, pattern references, and scaffolding commands for dept44 micr
 
 - **SessionStart hook** — automatically injects dept44 coding conventions into every Claude Code session
 - **14 slash commands** — pattern references (`/dept44:pattern-resource`, `/dept44:pattern-service`, etc.) and scaffolding (`/dept44:new-entity`, `/dept44:new-endpoint-crud`, etc.). The `pattern-*` and `new-*` commands are thin wrappers — each one points at a reference file under `skills/` so there's a single source of truth.
-- **4 skills** — contextual knowledge that Claude activates automatically: `dept44-patterns` (layer patterns + tests), `dept44-scaffold` (generating new components), `dept44-source` (framework internals lookup), `pattern-validator` (field validation)
+- **5 skills** — contextual knowledge that Claude activates automatically: `dept44-patterns` (layer patterns + tests), `dept44-scaffold` (generating new components), `dept44-source` (framework internals lookup), `pattern-validator` (field validation), `pr-template` (the org-level PR/issue template and how to fill it in)
 
 The dept44 plugin's skills, pattern references, and conventions were created by [Linus Sjölinder](https://github.com/Cheezi747).
 
@@ -95,6 +95,7 @@ dept44/                     # The dept44 plugin
     dept44-scaffold/        # references/new-*.md — canonical scaffolding instructions
     dept44-source/          # references/*.md — framework internals lookup
     pattern-validator/      # references/*.md — field validation
+    pr-template/            # org-level PR/issue template: where it is, how to fill it in
   hooks/
     hooks.json              # SessionStart hook config
     conventions.md          # dept44 coding conventions (injected on session start)

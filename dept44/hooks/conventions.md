@@ -8,16 +8,10 @@
 - **Municipality ID** `2281` is Sundsvall's municipality code, used as path parameter in APIs
 - **All services** are in the Sundsvallskommun GitHub org. If a sibling service repo is cloned locally, prefer reading from the filesystem over fetching from GitHub.
 
-## Pull requests and issues — use the org template
+## Pull requests and issues
 
-There is **no per-repo PR template** in the `api-service-*` repos or in `dept44`. They all inherit the
-org-level one from `Sundsvallskommun/.github` (`.github/PULL_REQUEST_TEMPLATE.md`; issue templates in
-`.github/ISSUE_TEMPLATE/`). Searching only the target repo will wrongly report that no template exists —
-read the org one (clone `Sundsvallskommun/.github` next to the services, or fetch it from GitHub) and fill it in.
-
-The template has three required sections: **Types of changes** (checkbox list), **Does this PR introduce a
-breaking change?** and **Checklist:**. Reproduce all three verbatim with the boxes ticked, and put the
-narrative in a `## Description` section above them. Only tick a checklist item that is actually true.
+There is **no per-repo PR template** — every repo inherits the org-level one from `Sundsvallskommun/.github`. Before
+`gh pr create` or `gh issue create`, use the `pr-template` skill: it says where the template is and how to fill it in.
 
 ## Tech Stack
 
@@ -88,7 +82,7 @@ se.sundsvall.{servicename}/
 - **AssertJ** for test assertions (except BeanMatchers which use Hamcrest)
 - Format with `mvn dept44-formatting:apply` (CI checks with `mvn dept44-formatting:check`); checkstyle enforced by CI
 - Component structure & tests (Resource / POJO / Entity / Service / Mapper / Integration / Scheduler): see the `pattern-*` commands or the `dept44-patterns` skill for the canonical layout of each
-  - API models: `create()` factory, `with*()` fluent setters, manual `equals`/`hashCode`/`toString`
+  - API models: `create()` factory, getters and setters, `with*()` fluent setters, manual `equals`/`hashCode`/`toString`
   - Services: `@Service`, constructor injection, `final` dependencies, `Problem.valueOf()` for errors
   - Mappers: static utility classes with private constructor, null-safe with `ofNullable()`
   - Resources: package-private, thin (no business logic), delegate to service layer
