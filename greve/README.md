@@ -16,8 +16,9 @@ plugin — the review command refers to `/dept44:pattern-*` for the canonical fi
    ```sh
    go install github.com/CheeziCrew/greve@latest
    ```
-   and make sure `$(go env GOPATH)/bin` (usually `~/go/bin`) is on your `PATH` — the MCP server is
-   started as plain `greve mcp`.
+   The MCP server is started as plain `greve mcp`, so the binary must be on your `PATH`: either add
+   `$(go env GOPATH)/bin` (usually `~/go/bin`) to it, or symlink the binary into a directory already
+   on your `PATH`, e.g. `ln -s ~/go/bin/greve ~/.local/bin/greve`.
 2. The Sundsvall repos cloned side by side in one directory. greve defaults to `~/Code/scit`; if
    yours live elsewhere, set `GREVE_ROOT` or create `~/.config/greve/config.yml`:
    ```yaml

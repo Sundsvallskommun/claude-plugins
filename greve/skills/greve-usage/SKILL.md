@@ -1,6 +1,6 @@
 ---
 name: greve-usage
-description: "How to use the greve MCP tools (mcp__greve__*) when working across the Sundsvall dept44 fleet. Trigger whenever the user asks which service calls or is called by another, what endpoints or schemas a service exposes, the impact of changing an endpoint or payload, which services are on a given dept44/dependency version, where a config key is used, what a service's DB schema or scheduled jobs look like, or wants a service reviewed against team conventions. Also trigger before writing code that talks to a sibling service — greve's catalogue is the fastest way to ground it. Prefer these tools over grepping ~10 repos by hand."
+description: "How to use the greve MCP tools (named mcp__plugin_greve_greve__* when greve is installed as this plugin, or mcp__greve__* if the server was added manually) when working across the Sundsvall dept44 fleet. Trigger whenever the user asks which service calls or is called by another, what endpoints or schemas a service exposes, the impact of changing an endpoint or payload, which services are on a given dept44/dependency version, where a config key is used, what a service's DB schema or scheduled jobs look like, or wants a service reviewed against team conventions. Also trigger before writing code that talks to a sibling service — greve's catalogue is the fastest way to ground it. Prefer these tools over grepping ~10 repos by hand."
 ---
 
 # greve — fleet code intelligence
@@ -27,6 +27,13 @@ versions, owners). Reach for it first at every phase, instead of raw `grep`/`fin
 - **Heuristic flags** — `integration_consistency`, `test_coverage`, pattern reports, review
   *warnings* — are **leads, not verdicts. Confirm against source before they drive an action.**
   A flag may be a tool gap or genuinely true. Review *errors* are deterministic and count as blockers.
+
+## Tool names
+
+Installed as this plugin, the tools are namespaced `mcp__plugin_greve_greve__<tool>` (for example
+`mcp__plugin_greve_greve__context_pack`). If the server was instead registered by hand with
+`claude mcp add greve -- greve mcp`, they are plain `mcp__greve__<tool>`. Same tools either way —
+match whichever prefix your session actually lists, and don't register both.
 
 ## Caveats
 
