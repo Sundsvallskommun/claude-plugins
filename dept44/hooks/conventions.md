@@ -7,6 +7,7 @@
 - **All services** follow the naming pattern `api-service-{name}` in GitHub
 - **Municipality ID** `2281` is Sundsvall's municipality code, used as path parameter in APIs
 - **All services** are in the Sundsvallskommun GitHub org. If a sibling service repo is cloned locally, prefer reading from the filesystem over fetching from GitHub.
+- **Everything that lands on GitHub is written in English** — commit messages, PR titles and bodies, issues, review comments, code comments and committed docs. A Swedish ticket, Slack thread or conversation does not change that; keep Swedish domain terms that name a table or a concept, but write the prose around them in English. Artefacts that never reach GitHub (Jira, local backlog documents) keep their own language.
 
 ## Pull requests and issues
 
