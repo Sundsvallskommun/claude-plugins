@@ -34,7 +34,7 @@ plugin — the review command refers to `/dept44:pattern-*` for the canonical fi
   `stale_clients`, `integration_consistency`, `db_schema`, `config_surface`, `search_config`,
   `scheduler_jobs`, `resilience_report`, `dependency_versions`, `fleet_report`, `git_activity`,
   `usage_examples`, `pattern_examples`, `test_coverage`, `review_diff`, `convention_rules`,
-  `standards_for_file`, `refresh_catalog`, … The catalogue rescans itself when older than five minutes.
+  `standards_for_file`, `clone_drift`, `refresh_catalog`, … The catalogue rescans itself when older than five minutes.
 - **`/greve:review [service] [--changed --base main] [--fix]`** — a one-pass senior review:
   greve's deterministic linter + the convention rulebook + SonarCloud findings (when the
   `sonarqube` MCP is connected) + Claude's judgment over the diff. Reports blockers vs advisories;

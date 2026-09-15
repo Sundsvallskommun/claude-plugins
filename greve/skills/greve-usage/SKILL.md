@@ -17,6 +17,7 @@ versions, owners). Reach for it first at every phase, instead of raw `grep`/`fin
 | **Find** things | `search_endpoints` / `endpoint_schema`, `search_config` / `config_surface`, `db_schema`, `scheduler_jobs`, `service_graph` / `path_between`, `dependency_versions`, `git_activity` |
 | **Ground new code** | `usage_examples` (how others call this endpoint), `pattern_examples` (canonical component examples in the fleet) |
 | **Verify a change** | `impact_analysis` (who breaks), `integration_consistency`, `stale_clients`, `resilience_report`, `fleet_report` |
+| **Before trusting a version number** | `clone_drift` — which local clones misrepresent their service |
 | **Review** | `review_diff` (deterministic convention linter), `convention_rules`, `standards_for_file` — or the `/greve:review` command for the full pass |
 | After pulling / switching branches | `refresh_catalog` |
 
@@ -24,6 +25,13 @@ versions, owners). Reach for it first at every phase, instead of raw `grep`/`fin
 
 - **Catalog facts** — endpoints, integrations, versions, call graph, db schema, config keys/values,
   owners — are **reliable grounding. Act on them directly.**
+- **…but they are only as fresh as the local clone.** greve reads the repos under the root, and
+  resolves each service's dept44 parent against `origin/<default>` rather than whatever branch
+  happens to be checked out. That correction is only as current as the last `git fetch`. Before a
+  version number drives real work — a bump campaign, "which services still need X" — call
+  `clone_drift`: it lists the clones whose checkout misrepresents the service, and how long ago they
+  were fetched. On the scit fleet this was wrong for 22 of 92 services before the fix, and sent a
+  sweep off to investigate work that had already shipped.
 - **Heuristic flags** — `integration_consistency`, `test_coverage`, pattern reports, review
   *warnings* — are **leads, not verdicts. Confirm against source before they drive an action.**
   A flag may be a tool gap or genuinely true. Review *errors* are deterministic and count as blockers.
