@@ -5,6 +5,19 @@ description: "How to write pull requests and issues for Sundsvallskommun repos (
 
 # Pull requests and issues — the org template
 
+## Language: English, always
+
+**Everything that lands on GitHub is written in English** — PR titles and bodies, commit messages,
+issue titles and bodies, review comments, code comments and any documentation committed to the repo.
+This holds however the work was discussed: a Swedish Slack thread, a Swedish ticket, Swedish domain
+terms (mantal, sjöman, juridisk person, arkivbildare) or a Swedish conversation with the author are
+not a reason to write the PR in Swedish. Keep the domain terms themselves when they name a table, a
+column or a concept that has no English equivalent — describe them in English rather than translating
+them away.
+
+Artefacts that never reach GitHub are outside this rule and keep their own language: Jira tickets and
+the Swedish backlog documents that live only on a developer's machine.
+
 ## Where the template is
 
 There is **no per-repo PR template** in the `api-service-*` repos, `dept44`, or the `pw-*` wrappers.
