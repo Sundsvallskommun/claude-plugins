@@ -67,7 +67,7 @@ Create all test classes following CLAUDE.md patterns:
 - `{Name}ServiceTest.java` — `@ExtendWith(MockitoExtension.class)`, `@Mock` repo, `@InjectMocks` service
 - `{Name}ResourceTest.java` — happy path, `@SpringBootTest`, `@AutoConfigureWebTestClient`, `WebTestClient`, `@MockitoBean`
 - `{Name}ResourceFailureTest.java` — validation failures, `@AutoConfigureWebTestClient`, use URL-safe invalid values (e.g. `"bad-municipality-id"`, `"not-a-valid-uuid"`) — do NOT use `#` in constants since it is a URL fragment delimiter
-- If the new service injects existing classes, verify those classes have sufficient test coverage (85% line + branch) — add tests for them if missing
+- If the new service injects existing classes, verify those classes have sufficient test coverage (85% line, 50% branch, per class) — add tests for them if missing
 
 ### 9. OpenAPI spec (`src/integration-test/resources/api/openapi.yaml`)
 - Add new paths matching all Resource endpoints
