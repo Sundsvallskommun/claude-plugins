@@ -1,6 +1,6 @@
 {
   "name": "greve",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "greve MCP server + review robot: fleet catalogue, impact analysis and a dept44 convention linter over locally cloned Sundsvall services",
   "author": {
     "name": "Sundsvalls kommun",

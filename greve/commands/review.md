@@ -15,7 +15,11 @@ Review a dept44 service's code the way a senior reviewer would, but in one pass 
 - `--fix` anywhere in the args — after reporting, apply the safe fixes to the working tree
 - no service given — use the repo in the current working directory
 
-`greve` must be on `PATH` (see the plugin README). Prefer the `greve` CLI (deterministic, always present); the same data is available via the greve MCP tools `review_diff`, `convention_rules`, `standards_for_file` when that server is connected. The SonarCloud layer needs the `sonarqube` MCP — if it is not connected, say so and skip that layer.
+### What has to be available
+Check before step 1, and state in the report which layers ran:
+- **The `greve` binary** — `command -v greve`. This command is built on it; if it is missing, stop and say so (install steps in the plugin README) rather than improvising a review without the deterministic layer. Prefer the CLI; the same data is available via the greve MCP tools `review_diff`, `convention_rules`, `standards_for_file` when that server is connected.
+- **The `dept44` plugin** — steps 6 and 9 point at its `/dept44:pattern-*` references. If they are not in the session, ground fixes in the matching rule from `greve standards <category> --json` (its `good_example`, where it has one) and a real in-org example from `greve patterns <type>` instead, and say that the pattern references were unavailable.
+- **The `sonarqube` MCP** — needed for step 3. If it is not connected, say so and skip that layer.
 
 ## Procedure
 
@@ -25,9 +29,12 @@ Resolve the service name and base ref. If `--changed`, get **every** changed fil
 
 **Escalate on the raw file count.** If `git diff --name-only` returns more than ~40 paths, offer the multi-agent Workflow fan-out (one reviewer per module/dimension + adversarial verification) — count the paths git prints, never your own estimate of the "real" diff after discounting generated files. Talking yourself out of the offer because most of the diff "is just generated" is the exact reasoning that suppresses it when it is most needed.
 
-**Open every changed file, including the large and generated ones.** You may skim them, but a file is never dismissed unread on the grounds that a tool produced it. For any checked-in spec, fixture, or generated artifact, at minimum check what it declares about the outside world: hostnames, `servers:` blocks, credentials, endpoints, pinned versions. A 60,000-line vendored OpenAPI spec is exactly where a production hostname reaches a public repo.
+**No changed file is dismissed unexamined on the grounds that a tool produced it** — but a large generated file does not need reading end to end. For checked-in specs, fixtures and other generated artifacts, check what they declare about the outside world with a targeted pass:
+- **Modified file:** read only its hunks (`git -C <repo> diff <base>...HEAD -- <file>`). Stable sections like `servers:` rarely change, so a hunk touching them is worth a close look.
+- **New file** (e.g. a provider's OpenAPI spec vendored into `src/main/resources/integrations/`): the whole file is new, so grep it instead of reading it — `grep -nEi 'https?://|servers:|host:|basePath|securitySchemes|tokenUrl|password|secret|api[-_]?key|token' <file>` — and read the hits in context. A spec copied from a provider's live `/api-docs` carries that environment's `servers:` block, which is exactly how a production or internal hostname reaches a public repo.
+- For the rest of a spec, check only what the change relies on: the schemas and paths the new client actually calls.
 
-List in the final report every file you did not read closely and why. An unexamined file is a stated limitation of the review, not a silent one.
+List in the final report every file you only checked with a targeted pass, and how. An unexamined file is a stated limitation of the review, not a silent one.
 
 ### 2. Deterministic layer (greve review)
 Run `greve review <service> [--changed --base <base>] --json`. These are high-precision, zero-judgment violations (banned ternaries/imports/Lombok, missing `@CircuitBreaker`, missing `{Resource}FailureTest`, `@Enumerated` not STRING, field injection, enums in api/model, …). Every error-severity finding is a merge blocker. Keep each finding's `corpus_id` — it links to the rule's rationale and good example.
@@ -81,10 +88,10 @@ Be specific and cite `file:line`. Prefer confirmed issues over speculation; mark
 ### 7. Build and coverage (always, not just with `--fix`)
 Run `mvn -B verify` in the service (add `-o` only if you know the local repository is already warm — a dependency bump on the branch will not resolve offline, and a spurious build failure is worse than a slow one). A review that never compiled the branch cannot say whether any finding is currently breaking anything, and the answer changes how the whole list should be read.
 
-Then read the branch-level coverage rather than trusting the gate: parse `target/jacoco-merge-report/jacoco.xml` (or `jacoco-ut-report`) for the classes the change touched and look for missed branches (`mb`) on the new code. The gate is per class at 85% line and only 50% branch, so it passes comfortably while a specific method is untested, and this is where you find the branches that are not merely uncovered but *unreachable at the configured values* — a guarded helper whose other formats can never run at the threshold actually set in `application.yml`.
+Then read the branch-level coverage rather than trusting the gate: parse `target/jacoco-merge-report/jacoco.xml` — the merged unit + integration data, which is what the gate checks; `jacoco-ut-report` alone under-reports anything covered only by AppTests — for the classes the change touched and look for missed branches (`mb`) on the new code. The gate is per class at 85% line and only 50% branch, so it passes comfortably while a specific method is untested, and this is where you find the branches that are not merely uncovered but *unreachable at the configured values* — a guarded helper whose other formats can never run at the threshold actually set in `application.yml`.
 
 ### 8. Report
-Group by severity, then file. For each finding: `file:line`, a one-line description, the `rule_id`/`corpus_id` or Sonar key, and a concrete suggested fix (show the corrected snippet for non-trivial ones). State the build result from step 7. List the files you did not read closely, per step 1. End with a short verdict: blockers (must fix before merge) vs. advisories, and the merge-readiness call.
+Group by severity, then file. For each finding: `file:line`, a one-line description, the `rule_id`/`corpus_id` or Sonar key, and a concrete suggested fix (show the corrected snippet for non-trivial ones). State the build result from step 7. List the files you only checked with a targeted pass, per step 1. End with a short verdict: blockers (must fix before merge) vs. advisories, and the merge-readiness call.
 
 ### 9. Fix (only if `--fix` given)
 Apply the safe, mechanical fixes to the working tree (ternary→if/else or Optional, add missing `@CircuitBreaker`, static-import constants, drop redundant `@PathVariable` names, add a `{Resource}FailureTest` skeleton, etc.). For each fix, follow the corresponding `/dept44:pattern-*` reference exactly. After fixing, re-run `greve review` to confirm the errors are cleared and re-run the step 7 build — a fix you have not compiled is a guess. Never push or commit — leave that to the user.

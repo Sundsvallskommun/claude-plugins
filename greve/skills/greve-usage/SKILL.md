@@ -36,6 +36,13 @@ versions, owners). Reach for it first at every phase, instead of raw `grep`/`fin
   *warnings* — are **leads, not verdicts. Confirm against source before they drive an action.**
   A flag may be a tool gap or genuinely true. Review *errors* are deterministic and count as blockers.
 
+## If the tools are missing
+
+The MCP server is started as `greve mcp`, so it only comes up when the `greve` binary is on `PATH`.
+If no greve tools are listed in the session (and `command -v greve` finds nothing), greve is not
+installed on this machine: say so once, point at the plugin README for install steps, and fall back
+to reading the repos directly. Don't guess at what a greve tool would have returned.
+
 ## Tool names
 
 Installed as this plugin, the tools are namespaced `mcp__plugin_greve_greve__<tool>` (for example
