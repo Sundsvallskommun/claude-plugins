@@ -93,7 +93,7 @@ se.sundsvall.{servicename}/
 
 ## Testing Requirements
 
-- **85% line + 85% branch coverage** (JaCoCo enforced, builds fail below this)
+- **85% line + 50% branch coverage, enforced per class** (JaCoCo `check-coverage-metrics`, builds fail below this)
 - JUnit 5 with `dept44-starter-test` utilities
 - Resource: two test classes — `{Resource}Test` (happy path) + `{Resource}FailureTest` (validation)
 - POJO/Entity: `testBean()` (BeanMatchers), `testBuilderMethods()`, `testNoDirtOnCreatedBean()`
@@ -150,7 +150,7 @@ mvn dept44-formatting:apply   # Format code
 
 - **Never extract or decompile JARs** (no `jar xf`, `javap`, `unzip` on JARs) — if the dept44 framework source is cloned locally, read it directly. Use WebSearch only as a fallback.
 - Don't add dependencies not managed by dept44-service-parent without good reason
-- Don't skip tests — 85% coverage enforced, builds fail
+- Don't skip tests — coverage is enforced per class, builds fail
 - Don't put business logic in Resource classes — keep them thin
 - Don't create endpoints without updating the OpenAPI spec
 - Don't ignore the formatting plugin — CI rejects unformatted code
